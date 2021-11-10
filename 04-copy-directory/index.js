@@ -5,9 +5,7 @@ const path = require('path');
 const copyDir = async (folderDir, nameOldFolder, newFolderDir, nameNewFolder) => {
     let oldFolder = path.join(folderDir, nameOldFolder);
     let newFolder = path.join(newFolderDir, nameNewFolder);
-    await fs.promises.rmdir(newFolder, {
-        recursive: true
-    });
+    
     await fs.promises.mkdir(newFolder, {
         recursive: true
     });
@@ -24,4 +22,16 @@ const copyDir = async (folderDir, nameOldFolder, newFolderDir, nameNewFolder) =>
         }
     }
 };
-copyDir(__dirname, 'files', __dirname, 'files-copy');
+const deletDir = async (newFolderDir, nameNewFolder) => {
+    let newFolder = path.join(newFolderDir, nameNewFolder);
+    await fs.promises.rmdir(newFolder, {
+        recursive: true
+    });
+};
+
+const copyClearDir = async() => {
+    await deletDir(__dirname, 'files-copy');
+    await copyDir(__dirname, 'files', __dirname, 'files-copy');
+};
+
+copyClearDir();

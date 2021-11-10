@@ -43,9 +43,6 @@ const infoFolder = async (dirFolder) => {
 const copyDir = async (folderDir, nameOldFolder, newFolderDir, nameNewFolder) => {
     let oldFolder = path.join(folderDir, nameOldFolder);
     let newFolder = path.join(newFolderDir, nameNewFolder);
-    await fs.promises.rmdir(newFolder, {
-        recursive: true
-    });
     await fs.promises.mkdir(newFolder, {
         recursive: true
     });
@@ -62,10 +59,18 @@ const copyDir = async (folderDir, nameOldFolder, newFolderDir, nameNewFolder) =>
         }
     }
 };
+const deletDir = async (newFolderDir, nameNewFolder) => {
+    let newFolder = path.join(newFolderDir, nameNewFolder);
+    await fs.promises.rmdir(newFolder, {
+        recursive: true
+    });
+};
+
 
 const buildFolder = async () => {
     await creatHtml(projectDir);
     await infoFolder(dirStyles);
+    await deletDir(path.join(__dirname, 'project-dist') , 'assets');
     await copyDir(__dirname, 'assets', path.join(__dirname, 'project-dist') , 'assets');
 }
 buildFolder();
