@@ -1,11 +1,15 @@
 const fs = require('fs');
 const path = require('path');
+const folderCopy = path.join(__dirname, 'files-copy');
+
 
 
 const copyDir = async (folderDir, nameOldFolder, newFolderDir, nameNewFolder) => {
     let oldFolder = path.join(folderDir, nameOldFolder);
     let newFolder = path.join(newFolderDir, nameNewFolder);
-    
+    await fs.promises.rmdir(newFolder, {
+        recursive: true
+    });
     await fs.promises.mkdir(newFolder, {
         recursive: true
     });
@@ -16,22 +20,10 @@ const copyDir = async (folderDir, nameOldFolder, newFolderDir, nameNewFolder) =>
         if (file.isFile()) {
             const oldFile = path.join(oldFolder, file.name);
             const newFile = path.join(newFolder, file.name);
-            await fs.promises.copyFile(oldFile, newFile);
+            await fs.promises.copyFile(oldFile, newFile)
         } else {
             copyDir(oldFolder, file.name, newFolder, file.name);
         }
     }
 };
-const deletDir = async (newFolderDir, nameNewFolder) => {
-    let newFolder = path.join(newFolderDir, nameNewFolder);
-    await fs.promises.rmdir(newFolder, {
-        recursive: true
-    });
-};
-
-const copyClearDir = async() => {
-    await deletDir(__dirname, 'files-copy');
-    await copyDir(__dirname, 'files', __dirname, 'files-copy');
-};
-
-copyClearDir();
+copyDir(__dirname, 'files', __dirname, 'files-copy');
